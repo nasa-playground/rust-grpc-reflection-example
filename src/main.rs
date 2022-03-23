@@ -14,7 +14,9 @@ fn echo_requests_iter() -> impl Stream<Item = ServerReflectionRequest> {
     tokio_stream::iter(1..usize::MAX).map(|_| ServerReflectionRequest {
         host: "localhost".into(),
         // message_request: Some(MessageRequest::FileByFilename("*".into())),
-        message_request: Some(MessageRequest::ListServices("*".into())),
+        message_request: Some(MessageRequest::FileContainingSymbol(
+            "helloworld.Greeter".into(),
+        )),
     })
 }
 
