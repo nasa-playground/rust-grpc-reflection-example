@@ -2,22 +2,25 @@ pub mod api {
     tonic::include_proto!("grpc.reflection.v1alpha");
 }
 
-use api::message_request;
+// use api::message_request;
 use api::server_reflection_client::ServerReflectionClient;
+use api::server_reflection_request::MessageRequest;
 use api::ServerReflectionRequest;
 
 use futures::stream::Stream;
 use tokio_stream::StreamExt;
 
 fn echo_requests_iter() -> impl Stream<Item = ServerReflectionRequest> {
-    tokio_stream::iter(1..usize::MAX).map(|i| ServerReflectionRequest {
+    tokio_stream::iter(1..usize::MAX).map(|_| ServerReflectionRequest {
         host: "localhost".into(),
-        message_request: None,
+        // message_request: Some(MessageRequest::FileByFilename("*".into())),
+        message_request: Some(MessageRequest::ListServices("*".into())),
     })
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    println!("{}", env!("OUT_DIR"));
     let mut client = ServerReflectionClient::connect("http://127.0.0.1:50052").await?;
 
     let num = 1;
